@@ -3,14 +3,32 @@
 {% block title %}{{ period }}{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <!-- {% if user.is_staff %}
-    <a href="{% url 'period_edit' period.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i> Modifier</a>
-    {% endif %} -->
-    <h2><i class="bi bi-calendar3"></i> {{ period }}</h2>
-    <a href="{% url 'period_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Périodes</a>
 
+    <!-- Titre -->
+    <h2 class="mb-0">
+        <i class="bi bi-calendar3"></i> {{ period }}
+    </h2>
+
+    <!-- Boutons -->
+    <div class="d-flex gap-2">
+
+        <a href="{% url 'period_list' %}"
+           class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Périodes
+        </a>
+
+        {% if user.is_staff %}
+            <a href="{% url 'period_edit' period.pk %}"
+               class="btn btn-primary btn-sm">
+                <i class="bi bi-pencil"></i> Modifier
+            </a>
+        {% endif %}
+
+    </div>
 
 </div>
+
+
 
 <div class="row g-4 mb-2">
     <!-- Charges -->

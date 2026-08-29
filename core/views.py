@@ -3,6 +3,7 @@ from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -53,7 +54,7 @@ def period_list(request):
     return render(request, "core/period_list.html", {"periods": periods})
 
 
-@login_required
+@staff_member_required
 def period_add(request):
     if request.method == "POST":
         form = PeriodForm(request.POST)
@@ -66,7 +67,7 @@ def period_add(request):
     return render(request, "core/period_form.html", {"form": form})
 
 
-@is_staff
+@staff_member_required
 def period_edit(request, pk):
     period = get_object_or_404(Period, pk=pk)
     if request.method == "POST":
@@ -99,6 +100,15 @@ def period_detail(request, pk):
         "wifi_form": wifi_form,
         "presence_rows": presence_rows,
     })
+
+@staff_member_required
+def period_delete(request, pk):
+    period = get_object_or_404(Period, pk=pk)
+    if request.method == "POST":
+        period.delete()
+        messages.success(request, "Période supprimée.")
+        return redirect("period_list")
+    return render(request, "core/period_delete.html", {"period": period})
 
 
 @login_required

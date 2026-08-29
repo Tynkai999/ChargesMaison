@@ -12,6 +12,7 @@ urlpatterns = [
     path("periodes/ajouter/", views.period_add, name="period_add"),
     path("periodes/<int:pk>/modifier/", views.period_edit, name="period_edit"),
     path("periodes/<int:pk>/", views.period_detail, name="period_detail"),
+    path("periodes/<int:pk>/supprimer/", views.period_delete, name="period_delete"),
     path("periodes/<int:pk>/charges/ajouter/", views.charge_add, name="charge_add"),
     path("periodes/<int:pk>/charges/<int:charge_id>/modifier/", views.charge_edit, name="charge_edit"),
     path("periodes/<int:pk>/charges/<int:charge_id>/supprimer/", views.charge_delete, name="charge_delete"),

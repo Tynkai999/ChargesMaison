@@ -1,0 +1,47 @@
+{% extends "core/base.html" %}
+
+{% block title %}Supprimer {{ period }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h4 class="mb-3 text-danger">
+                <i class="bi bi-trash"></i> Supprimer {{ period }}
+            </h4>
+
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Attention !</strong>
+                Cette action est définitive.
+            </div>
+
+            <p>
+                Voulez-vous vraiment supprimer la période
+                <strong>{{ period }}</strong> ?
+            </p>
+
+            <p class="text-muted small">
+                La suppression de cette période entraînera également
+                la suppression des charges, présences, contributions Wifi
+                et paiements associés.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    Oui, supprimer
+                </button>
+
+                <a href="{% url 'period_list' %}"
+                   class="btn btn-link">
+                    Annuler
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```

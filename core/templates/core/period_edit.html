@@ -17,7 +17,7 @@
                 </div>
                 <div class="form-check mb-2">
                     <input type="checkbox" class="form-check-input" name="cloturee" id="cloturee" {% if period.cloturee %}checked{% endif %}>
-                    <label class="form-check-label" for="cloturee">Période clôturée (verrouillée, à titre indicatif)</label>
+                    <label class="form-check-label" for="cloturee">Période clôturée </label>
                 </div>
                 <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
                 <a href="{% url 'period_detail' period.pk %}" class="btn btn-link mt-2">Annuler</a>
