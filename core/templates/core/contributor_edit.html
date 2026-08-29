@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% block title %}Modifier un contributeur{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h4 class="mb-3"><i class="bi bi-pencil"></i> Modifier « {{ contributor.nom }} »</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label class="form-label">{{ form.nom.label }}</label>
+                    {{ form.nom }}
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">{{ form.telephone.label }}</label>
+                    {{ form.telephone }}
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
+                <a href="{% url 'contributor_list' %}" class="btn btn-link mt-2">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

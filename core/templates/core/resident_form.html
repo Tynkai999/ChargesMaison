@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+{% block title %}Créer un résident{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card p-4">
+            <h4 class="mb-3"><i class="bi bi-person-plus"></i> Créer un compte résident</h4>
+            <p class="text-muted small">Ce compte permettra à la personne de se connecter avec un nom d'utilisateur et un mot de passe.</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-2">
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">{{ form.first_name.label }}</label>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">{{ form.last_name.label }}</label>
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">{{ form.username.label }}</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">{{ form.telephone.label }}</label>
+                    {{ form.telephone }}
+                </div>
+                <div class="row g-2">
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">{{ form.password1.label }}</label>
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">{{ form.password2.label }}</label>
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2"><i class="bi bi-check-circle"></i> Créer le compte</button>
+                <a href="{% url 'resident_list' %}" class="btn btn-link mt-2">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

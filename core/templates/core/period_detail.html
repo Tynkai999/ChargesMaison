@@ -1,0 +1,262 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+{% block title %}{{ period }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- {% if user.is_staff %}
+    <a href="{% url 'period_edit' period.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i> Modifier</a>
+    {% endif %} -->
+    <h2><i class="bi bi-calendar3"></i> {{ period }}</h2>
+    <a href="{% url 'period_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Périodes</a>
+
+
+</div>
+
+<div class="row g-4 mb-2">
+    <!-- Charges -->
+    <div class="col-lg-6">
+        <div class="card p-3 h-100">
+            <h5><i class="bi bi-receipt"></i> Charges de la maison</h5>
+            <table class="table table-sm">
+                <thead><tr><th>Type</th><th class="text-end">Montant</th><th>Note</th><th></th></tr></thead>
+                <tbody>
+                {% for charge in summary.charges %}
+                    <tr>
+                        <td>
+                            {{ charge.charge_type.nom }}
+                            {% if charge.charge_type.est_loyer %}<span class="badge bg-primary-subtle text-primary">loyer</span>{% endif %}
+                            {% if charge.charge_type.est_wifi %}<span class="badge bg-info-subtle text-info">wifi</span>{% endif %}
+                        </td>
+                        <td class="text-end">{{ charge.montant|floatformat:0|intcomma }}</td>
+                        <td class="text-muted small">{{ charge.note }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'charge_edit' period.pk charge.pk %}" class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></a>
+                            <form method="post" action="{% url 'charge_delete' period.pk charge.pk %}" onsubmit="return confirm('Supprimer cette charge ?');" class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-link text-danger p-0"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-muted">Aucune charge enregistrée.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <form method="post" action="{% url 'charge_add' period.pk %}" class="row g-2 mt-2">
+                {% csrf_token %}
+                <div class="col-4">{{ charge_form.charge_type }}</div>
+                <div class="col-3">{{ charge_form.montant }}</div>
+                <div class="col-3">{{ charge_form.note }}</div>
+                <div class="col-2"><button class="btn btn-primary w-100"><i class="bi bi-plus"></i></button></div>
+            </form>
+            <div class="form-text">
+                Pas de type de charge adapté ? <a href="{% url 'charge_type_list' %}">Gérer les types de charge</a>.
+            </div>
+        </div>
+    </div>
+
+    <!-- Wifi -->
+    <div class="col-lg-6">
+        <div class="card p-3 h-100">
+            <h5><i class="bi bi-wifi"></i> Contributions wifi (externes)</h5>
+            <table class="table table-sm">
+                <thead><tr><th>Contributeur</th><th class="text-end">Montant</th><th></th></tr></thead>
+                <tbody>
+                {% for wc in period.wifi_contributions.all %}
+                    <tr>
+    <td>{{ wc.contributor.nom }}</td>
+
+    <td class="text-end">
+        {{ wc.montant|floatformat:0|intcomma }}
+    </td>
+
+    <td class="text-end">
+        <div class="d-flex justify-content-end align-items-center gap-2">
+
+            <!-- Modifier -->
+             {% if user.is_staff %}
+            <a href="{% url 'wifi_contribution_edit' period.pk wc.pk %}"
+               class="btn btn-sm btn-link p-0"
+               title="Modifier">
+                <i class="bi bi-pencil"></i>
+            </a>
+            {% endif %}
+            <!-- Supprimer -->
+
+            {% if user.is_staff %}
+            <form method="post"
+                  action="{% url 'wifi_contribution_delete' period.pk wc.pk %}"
+                  class="m-0"
+                  onsubmit="return confirm('Supprimer cette contribution ?');">
+
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="btn btn-sm btn-link text-danger p-0"
+                        title="Supprimer">
+                    <i class="bi bi-trash"></i>
+                </button>
+
+            </form>
+            {% endif %}
+        </div>
+    </td>
+</tr>
+                {% empty %}
+                    <tr><td colspan="3" class="text-muted">Aucune contribution externe.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <form method="post" action="{% url 'wifi_contribution_add' period.pk %}" class="row g-2 mt-2">
+                {% csrf_token %}
+                <div class="col-6">{{ wifi_form.contributor }}</div>
+                <div class="col-4">{{ wifi_form.montant }}</div>
+                <div class="col-2"><button class="btn btn-primary w-100"><i class="bi bi-plus"></i></button></div>
+            </form>
+            <div class="form-text">
+                Nouveau contributeur ? <a href="{% url 'contributor_list' %}">Gérer les contributeurs externes</a>.
+            </div>
+            <div class="alert alert-light border mt-3 mb-0 small">
+                Abonnement wifi : <strong>{{ summary.wifi_total|floatformat:0|intcomma }} FCFA</strong>
+                &minus; contributions externes <strong>{{ summary.external_contrib_total|floatformat:0|intcomma }} FCFA</strong>
+                = <strong>{{ summary.wifi_remainder|floatformat:0|intcomma }} FCFA</strong> ajoutés aux charges des résidents présents.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Détail des autres charges -->
+<div class="card p-3 mb-4">
+    <h5><i class="bi bi-list-ul"></i> Détail des autres charges (ce que chacun paie)</h5>
+    <p class="text-muted small">
+        Cette liste indique, type par type, le montant total et la part qui revient à chaque
+        résident <strong>présent</strong> (répartition sur {{ summary.present_count }} présent(s)).
+        C'est le même détail que celui inclus dans le PDF individuel de chaque résident.
+    </p>
+    <table class="table table-sm mb-0">
+        <thead><tr><th>Type de charge</th><th class="text-end">Montant total</th><th class="text-end">Part par présent</th><th>Détail</th></tr></thead>
+        <tbody>
+            <tr class="table-light">
+                <td><strong>Loyer</strong> <span class="text-muted small">(÷ {{ summary.total_residents }} résidents, présents ou non)</span></td>
+                <td class="text-end">{{ summary.rent_total|floatformat:0|intcomma }}</td>
+                <td class="text-end">{{ summary.rent_share|floatformat:0|intcomma }}</td>
+                <td></td>
+            </tr>
+            {% for item in summary.charge_breakdown %}
+            <tr>
+                <td>{{ item.label }}</td>
+                <td class="text-end">{{ item.montant_total|floatformat:0|intcomma }}</td>
+                <td class="text-end">{{ item.part_par_present|floatformat:0|intcomma }}</td>
+                <td class="text-muted small">{{ item.note }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-muted">Aucune autre charge enregistrée pour cette période.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Présences -->
+<div class="card p-3 mb-4">
+    <h5><i class="bi bi-people"></i> Présence dans la maison ce mois-ci</h5>
+    <p class="text-muted small">Un résident absent ne paie que sa part de loyer. Un résident présent paie en plus sa part des autres charges (dont le solde wifi).</p>
+    <form method="post" action="{% url 'presence_update' period.pk %}">
+        {% csrf_token %}
+        <div class="row">
+        {% for row in presence_rows %}
+            <div class="col-md-4 mb-2">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch"
+                           name="present_{{ row.resident.id }}" id="present_{{ row.resident.id }}"
+                           {% if row.present %}checked{% endif %}>
+                    <label class="form-check-label" for="present_{{ row.resident.id }}">{{ row.resident }}</label>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary mt-2"><i class="bi bi-save"></i> Enregistrer les présences</button>
+    </form>
+</div>
+
+<!-- Répartition -->
+<div class="card p-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0"><i class="bi bi-cash-coin"></i> Répartition des contributions</h5>
+        <div>
+            <a href="{% url 'period_pdf_all' period.pk %}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-file-earmark-pdf"></i> Télécharger le récapitulatif PDF
+            </a>
+            {% if user.is_staff %}
+                <a href="{% url 'payment_tracking' period.pk %}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-cash-stack"></i> Suivi des paiements
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <p class="text-muted small mt-2">
+        Part de loyer par résident : <strong>{{ summary.rent_share|floatformat:0|intcomma }} FCFA</strong>
+        ({{ summary.rent_total|floatformat:0|intcomma }} ÷ {{ summary.total_residents }} résidents) &mdash;
+        Part des autres charges par présent : <strong>{{ summary.other_share|floatformat:0|intcomma }} FCFA</strong>
+        ({{ summary.other_pool|floatformat:0|intcomma }} ÷ {{ summary.present_count }} présents)
+    </p>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Résident</th>
+                <th>Présence</th>
+                <th class="text-end">Part loyer</th>
+                <th class="text-end">Part autres charges</th>
+                <th class="text-end">Total à payer</th>
+                <th>Paiement</th>
+                <th>PDF</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for line in summary.lines %}
+            <tr>
+                <td>{{ line.resident }}</td>
+                <td>
+                    {% if line.present %}
+                        <span class="badge bg-success">Présent</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Absent</span>
+                    {% endif %}
+                </td>
+                <td class="text-end">{{ line.rent_share|floatformat:0|intcomma }}</td>
+                <td class="text-end">{{ line.other_share|floatformat:0|intcomma }}</td>
+                <td class="text-end fw-bold">{{ line.total|floatformat:0|intcomma }}</td>
+                <td>
+                    {% if line.statut_paiement == "paye" %}
+                        <span class="badge bg-success">Payé</span>
+                    {% elif line.statut_paiement == "partiel" %}
+                        <span class="badge bg-warning text-dark">Partiel</span>
+                    {% else %}
+                        <span class="badge bg-danger">Impayé</span>
+                    {% endif %}
+                </td>
+                <td class="text-nowrap">
+                    <a href="{% url 'contribution_pdf' period.pk line.resident.id %}" class="btn btn-sm btn-outline-secondary" title="Télécharger le PDF">
+                        <i class="bi bi-download"></i>
+                    </a>
+                    {% if user.is_staff %}
+                        <form method="post" action="{% url 'contribution_pdf_send' period.pk line.resident.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-outline-primary" title="Envoyer par email">
+                                <i class="bi bi-envelope"></i>
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="fw-bold border-top">
+                <td colspan="4">Total collecté</td>
+                <td class="text-end">{{ summary.grand_total|floatformat:0|intcomma }} FCFA</td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock %}

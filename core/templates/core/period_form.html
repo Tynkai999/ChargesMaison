@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+{% block title %}Nouvelle période{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h4 class="mb-3"><i class="bi bi-calendar-plus"></i> Nouvelle période</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">{{ form.annee.label }}</label>
+                    {{ form.annee }}
+                    {{ form.annee.errors }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.mois.label }}</label>
+                    {{ form.mois }}
+                    {{ form.mois.errors }}
+                </div>
+                <button type="submit" class="btn btn-primary">Créer</button>
+                <a href="{% url 'period_list' %}" class="btn btn-link">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

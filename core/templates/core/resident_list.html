@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+{% block title %}Résidents{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people"></i> Résidents de la maison</h2>
+    {% if user.is_staff %}
+        <a href="{% url 'resident_add' %}" class="btn btn-primary"><i class="bi bi-person-plus"></i> Créer un compte résident</a>
+    {% endif %}
+</div>
+<div class="card">
+    <table class="table mb-0">
+        <thead><tr><th>Nom</th><th>Nom d'utilisateur</th><th>Téléphone</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for r in residents %}
+            <tr>
+                <td>{{ r }}</td>
+                <td><code>{{ r.user.username }}</code></td>
+                <td>{{ r.telephone|default:"—" }}</td>
+                <td>
+                    {% if r.actif %}<span class="badge bg-success">Actif</span>{% else %}<span class="badge bg-secondary">Inactif</span>{% endif %}
+                </td>
+                <td>
+                    {% if user.is_staff %}
+                        <a href="{% url 'resident_edit' r.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Modifier</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="text-muted">Aucun résident enregistré.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% if not user.is_staff %}
+    <p class="text-muted small mt-3">Seul un administrateur de la maison peut créer de nouveaux comptes résidents.</p>
+{% endif %}
+{% endblock %}

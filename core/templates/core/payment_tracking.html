@@ -1,0 +1,71 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+{% block title %}Suivi des paiements - {{ period }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-cash-stack"></i> Suivi des paiements &mdash; {{ period }}</h2>
+    <a href="{% url 'period_detail' period.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Retour à la période</a>
+</div>
+
+<p class="text-muted">
+    Cochez la case dès qu'un résident a payé, et indiquez le montant réellement versé
+    (utile en cas de paiement partiel). Le statut est calculé automatiquement.
+</p>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="card">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Résident</th>
+                    <th class="text-end">Montant dû</th>
+                    <th>Payé ?</th>
+                    <th style="width:140px;">Montant versé</th>
+                    <th style="width:160px;">Date du paiement</th>
+                    <th>Note</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for line in summary.lines %}
+                <tr>
+                    <td>{{ line.resident }}</td>
+                    <td class="text-end fw-bold">{{ line.total|floatformat:0|intcomma }} FCFA</td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   name="paye_{{ line.resident.id }}" id="paye_{{ line.resident.id }}"
+                                   {% if line.paye %}checked{% endif %}>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="number" step="1" min="0" class="form-control form-control-sm"
+                               name="montant_{{ line.resident.id }}" value="{{ line.montant_paye|floatformat:0 }}">
+                    </td>
+                    <td>
+                        <input type="date" class="form-control form-control-sm"
+                               name="date_{{ line.resident.id }}"
+                               value="{{ line.payment.date_paiement|date:'Y-m-d' }}">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm"
+                               name="note_{{ line.resident.id }}" value="{{ line.payment.note|default:'' }}">
+                    </td>
+                    <td>
+                        {% if line.statut_paiement == "paye" %}
+                            <span class="badge bg-success">Payé</span>
+                        {% elif line.statut_paiement == "partiel" %}
+                            <span class="badge bg-warning text-dark">Partiel ({{ line.reste_a_payer|floatformat:0|intcomma }} restant)</span>
+                        {% else %}
+                            <span class="badge bg-danger">Impayé</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3"><i class="bi bi-save"></i> Enregistrer les paiements</button>
+</form>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+{% block title %}Tableau de bord{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-speedometer2"></i> Tableau de bord</h2>
+    <a href="{% url 'period_add' %}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nouvelle période</a>
+</div>
+
+{% if not summaries %}
+    <div class="alert alert-info">
+        Aucune période enregistrée pour le moment. Commencez par
+        <a href="{% url 'period_add' %}">créer une période</a>.
+    </div>
+{% endif %}
+
+<div class="row g-4">
+{% for summary in summaries %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <h5 class="card-title d-flex justify-content-between">
+                    {{ summary.period }}
+                    {% if summary.period.cloturee %}<span class="badge bg-secondary">Clôturée</span>{% endif %}
+                </h5>
+                <table class="table table-sm mb-3">
+                    <tr><td>Loyer total</td><td class="text-end">{{ summary.rent_total|floatformat:0|intcomma }} FCFA</td></tr>
+                    <tr><td>Autres charges</td><td class="text-end">{{ summary.other_total|floatformat:0|intcomma }} FCFA</td></tr>
+                    <tr><td>Wifi (net à répartir)</td><td class="text-end">{{ summary.wifi_remainder|floatformat:0|intcomma }} FCFA</td></tr>
+                    <tr class="fw-bold border-top"><td>Total maison</td><td class="text-end">{{ summary.grand_total|floatformat:0|intcomma }} FCFA</td></tr>
+                </table>
+                <p class="text-muted small mb-3">
+                    <i class="bi bi-people"></i> {{ summary.present_count }} présent(s) / {{ summary.total_residents }} résident(s)
+                </p>
+                <a href="{% url 'period_detail' summary.period.pk %}" class="btn btn-outline-primary w-100">Voir le détail <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

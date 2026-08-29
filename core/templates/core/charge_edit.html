@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+{% block title %}Modifier une charge{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h4 class="mb-3"><i class="bi bi-pencil"></i> Modifier « {{ charge.charge_type }} » — {{ period }}</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">{{ form.charge_type.label }}</label>
+                    {{ form.charge_type }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.montant.label }}</label>
+                    {{ form.montant }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.note.label }}</label>
+                    {{ form.note }}
+                </div>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <a href="{% url 'period_detail' period.pk %}" class="btn btn-link">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

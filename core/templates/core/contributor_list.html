@@ -1,0 +1,53 @@
+{% extends "core/base.html" %}
+{% block title %}Contributeurs wifi{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-wifi"></i> Contributeurs externes (wifi)</h2>
+</div>
+<p class="text-muted">
+    Ce sont des personnes qui ne vivent pas dans la maison mais qui participent au paiement de
+    l'abonnement internet. Ajoutez-les ici une fois ; vous pourrez ensuite enregistrer leur
+    contribution pour chaque période dans le détail de la période.
+</p>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="list-group list-group-flush">
+                {% for c in contributors %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ c.nom }}</strong>
+                            {% if c.telephone %}<span class="text-muted small"> &mdash; {{ c.telephone }}</span>{% endif %}
+                        </div>
+                        <a href="{% url 'contributor_edit' c.pk %}" class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></a>
+                        <form method="post" action="{% url 'contributor_delete' c.pk %}" onsubmit="return confirm('Supprimer ce contributeur ?');">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-link text-danger p-0"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                {% empty %}
+                    <div class="list-group-item text-muted">Aucun contributeur externe pour le moment.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card p-3">
+            <h5>Ajouter un contributeur</h5>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label class="form-label">{{ form.nom.label }}</label>
+                    {{ form.nom }}
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">{{ form.telephone.label }}</label>
+                    {{ form.telephone }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-2"><i class="bi bi-plus-circle"></i> Ajouter</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% block title %}Modifier une contribution wifi{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h4 class="mb-3"><i class="bi bi-pencil"></i> Modifier la contribution de {{ wc.contributor }} — {{ period }}</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label class="form-label">{{ form.contributor.label }}</label>
+                    {{ form.contributor }}
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">{{ form.montant.label }}</label>
+                    {{ form.montant }}
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
+                <a href="{% url 'period_detail' period.pk %}" class="btn btn-link mt-2">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

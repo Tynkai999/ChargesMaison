@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+{% block title %}Modifier {{ period }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h4 class="mb-3"><i class="bi bi-pencil"></i> Modifier {{ period }}</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label class="form-label">{{ form.annee.label }}</label>
+                    {{ form.annee }}
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">{{ form.mois.label }}</label>
+                    {{ form.mois }}
+                </div>
+                <div class="form-check mb-2">
+                    <input type="checkbox" class="form-check-input" name="cloturee" id="cloturee" {% if period.cloturee %}checked{% endif %}>
+                    <label class="form-check-label" for="cloturee">Période clôturée (verrouillée, à titre indicatif)</label>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
+                <a href="{% url 'period_detail' period.pk %}" class="btn btn-link mt-2">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

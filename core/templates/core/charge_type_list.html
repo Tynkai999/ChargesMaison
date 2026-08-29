@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+{% block title %}Types de charge{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-tags"></i> Types de charge</h2>
+</div>
+<p class="text-muted">
+    Cochez <strong>« C'est le loyer »</strong> pour le type Loyer (réparti entre tous les résidents, présents ou non)
+    et <strong>« C'est l'abonnement wifi »</strong> pour le type Internet (les contributions externes en seront déduites).
+</p>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card">
+            <table class="table mb-0">
+                <thead><tr><th>Nom</th><th>Loyer</th><th>Wifi</th><th></th></tr></thead>
+                <tbody>
+                {% for ct in charge_types %}
+                    <tr>
+                        <td>{{ ct.nom }}</td>
+                        <td>{% if ct.est_loyer %}<i class="bi bi-check-circle-fill text-success"></i>{% endif %}</td>
+                        <td>{% if ct.est_wifi %}<i class="bi bi-check-circle-fill text-success"></i>{% endif %}</td>
+                        <td class="text-end">
+                            <a href="{% url 'charge_type_edit' ct.pk %}" class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></a>
+                            <form method="post" action="{% url 'charge_type_delete' ct.pk %}" onsubmit="return confirm('Supprimer ce type de charge ?');" class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-link text-danger p-0"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    
+                    </tr>
+                    
+                {% empty %}
+                    <tr><td colspan="4" class="text-muted">Aucun type de charge pour le moment.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card p-3">
+            <h5>Ajouter un type</h5>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label class="form-label">{{ form.nom.label }}</label>
+                    {{ form.nom }}
+                </div>
+                <div class="form-check mb-2">
+                    {{ form.est_loyer }}
+                    <label class="form-check-label">{{ form.est_loyer.label }}</label>
+                </div>
+                <div class="form-check mb-2">
+                    {{ form.est_wifi }}
+                    <label class="form-check-label">{{ form.est_wifi.label }}</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-2"><i class="bi bi-plus-circle"></i> Ajouter</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
