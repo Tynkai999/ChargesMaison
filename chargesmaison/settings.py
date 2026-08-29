@@ -105,6 +105,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Pour Django 4.2 et versions supérieures :
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
@@ -120,6 +131,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
+
+# Dossier où collectstatic va tout rassembler (Obligatoire)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# URL de base pour les fichiers statiques
+
 
 STATIC_URL = 'static/'
 
