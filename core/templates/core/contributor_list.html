@@ -1,52 +1,72 @@
 {% extends "core/base.html" %}
 {% block title %}Contributeurs wifi{% endblock %}
+{% block breadcrumb %}Contributeurs wifi{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-wifi"></i> Contributeurs externes (wifi)</h2>
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-wifi" style="color: var(--primary);"></i> Contributeurs externes</h2>
+        <p class="page-header-subtitle">Personnes qui partagent le wifi sans habiter dans la maison</p>
+    </div>
 </div>
-<p class="text-muted">
-    Ce sont des personnes qui ne vivent pas dans la maison mais qui participent au paiement de
-    l'abonnement internet. Ajoutez-les ici une fois ; vous pourrez ensuite enregistrer leur
-    contribution pour chaque période dans le détail de la période.
-</p>
 
 <div class="row g-4">
     <div class="col-lg-7">
         <div class="card">
+            {% if contributors %}
             <div class="list-group list-group-flush">
                 {% for c in contributors %}
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>{{ c.nom }}</strong>
-                            {% if c.telephone %}<span class="text-muted small"> &mdash; {{ c.telephone }}</span>{% endif %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 36px; height: 36px; background: var(--info-bg); color: var(--info); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.875rem;">
+                            <i class="bi bi-person"></i>
                         </div>
-                        <a href="{% url 'contributor_edit' c.pk %}" class="btn btn-sm btn-link p-0 me-2"><i class="bi bi-pencil"></i></a>
-                        <form method="post" action="{% url 'contributor_delete' c.pk %}" onsubmit="return confirm('Supprimer ce contributeur ?');">
+                        <div>
+                            <div style="font-weight: 600;">{{ c.nom }}</div>
+                            {% if c.telephone %}<div class="text-muted" style="font-size: 0.75rem;">{{ c.telephone }}</div>{% endif %}
+                        </div>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <a href="{% url 'contributor_edit' c.pk %}" class="btn btn-icon btn-sm btn-outline-primary" title="Modifier">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <form method="post" action="{% url 'contributor_delete' c.pk %}" onsubmit="return confirm('Supprimer ce contributeur ?');" class="d-inline">
                             {% csrf_token %}
-                            <button class="btn btn-sm btn-link text-danger p-0"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-icon btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </form>
                     </div>
-                {% empty %}
-                    <div class="list-group-item text-muted">Aucun contributeur externe pour le moment.</div>
+                </div>
                 {% endfor %}
             </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-wifi"></i></div>
+                <div class="empty-state-title">Aucun contributeur</div>
+                <p class="text-muted">Ajoutez des contributeurs wifi externes ici.</p>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="col-lg-5">
-        <div class="card p-3">
-            <h5>Ajouter un contributeur</h5>
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-2">
-                    <label class="form-label">{{ form.nom.label }}</label>
-                    {{ form.nom }}
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">{{ form.telephone.label }}</label>
-                    {{ form.telephone }}
-                </div>
-                <button type="submit" class="btn btn-primary w-100 mt-2"><i class="bi bi-plus-circle"></i> Ajouter</button>
-            </form>
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-person-plus" style="color: var(--success);"></i>
+                Ajouter un contributeur
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.nom.label }}</label>
+                        {{ form.nom }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.telephone.label }}</label>
+                        {{ form.telephone }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus-circle"></i> Ajouter</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

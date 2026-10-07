@@ -1,25 +1,34 @@
 {% extends "core/base.html" %}
 {% block title %}Nouvelle période{% endblock %}
+{% block breadcrumb %}<a href="{% url 'period_list' %}">Périodes</a> <span class="separator"><i class="bi bi-chevron-right"></i></span> <span class="current">Nouvelle</span>{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card p-4">
-            <h4 class="mb-3"><i class="bi bi-calendar-plus"></i> Nouvelle période</h4>
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label class="form-label">{{ form.annee.label }}</label>
-                    {{ form.annee }}
-                    {{ form.annee.errors }}
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">{{ form.mois.label }}</label>
-                    {{ form.mois }}
-                    {{ form.mois.errors }}
-                </div>
-                <button type="submit" class="btn btn-primary">Créer</button>
-                <a href="{% url 'period_list' %}" class="btn btn-link">Annuler</a>
-            </form>
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-calendar-plus" style="color: var(--primary);"></i>
+                Nouvelle période
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.annee.label }}</label>
+                        {{ form.annee }}
+                        {% if form.annee.errors %}<div class="text-danger" style="font-size: 0.8125rem;">{{ form.annee.errors }}</div>{% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.mois.label }}</label>
+                        {{ form.mois }}
+                        {% if form.mois.errors %}<div class="text-danger" style="font-size: 0.8125rem;">{{ form.mois.errors }}</div>{% endif %}
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Créer</button>
+                        <a href="{% url 'period_list' %}" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

@@ -1,27 +1,36 @@
 {% extends "core/base.html" %}
-{% block title %}Modifier un type de charge{% endblock %}
+{% block title %}Modifier « {{ charge_type.nom }} »{% endblock %}
+{% block breadcrumb %}<a href="{% url 'charge_type_list' %}">Types de charge</a> <span class="separator"><i class="bi bi-chevron-right"></i></span> <span class="current">{{ charge_type.nom }}</span>{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card p-4">
-            <h4 class="mb-3"><i class="bi bi-pencil"></i> Modifier « {{ charge_type.nom }} »</h4>
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-2">
-                    <label class="form-label">{{ form.nom.label }}</label>
-                    {{ form.nom }}
-                </div>
-                <div class="form-check mb-2">
-                    {{ form.est_loyer }}
-                    <label class="form-check-label">{{ form.est_loyer.label }}</label>
-                </div>
-                <div class="form-check mb-2">
-                    {{ form.est_wifi }}
-                    <label class="form-check-label">{{ form.est_wifi.label }}</label>
-                </div>
-                <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
-                <a href="{% url 'charge_type_list' %}" class="btn btn-link mt-2">Annuler</a>
-            </form>
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-pencil" style="color: var(--primary);"></i>
+                Modifier « {{ charge_type.nom }} »
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.nom.label }}</label>
+                        {{ form.nom }}
+                    </div>
+                    <div class="form-check mb-2">
+                        {{ form.est_loyer }}
+                        <label class="form-check-label">{{ form.est_loyer.label }}</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        {{ form.est_wifi }}
+                        <label class="form-check-label">{{ form.est_wifi.label }}</label>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Enregistrer</button>
+                        <a href="{% url 'charge_type_list' %}" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

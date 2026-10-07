@@ -1,45 +1,106 @@
 {% extends "core/base.html" %}
 {% load humanize %}
 {% block title %}Mes contributions{% endblock %}
+{% block breadcrumb %}Mes contributions{% endblock %}
+
 {% block content %}
-<h2 class="mb-4"><i class="bi bi-wallet2"></i> Mes contributions</h2>
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-wallet2" style="color: var(--primary);"></i> Mes contributions</h2>
+        <p class="page-header-subtitle">Historique de vos parts de charges</p>
+    </div>
+</div>
 
 {% if not resident %}
     <div class="alert alert-warning">
-        Votre compte n'est pas encore associé à un résident de la maison. Contactez l'administrateur.
+        <i class="bi bi-exclamation-triangle"></i>
+        <div>Votre compte n'est pas encore associé à un résident. Contactez l'administrateur.</div>
     </div>
 {% else %}
-    <div class="card">
-        <table class="table mb-0">
+
+<!-- Résumé -->
+{% if rows %}
+<div class="row g-3 mb-4">
+    <div class="col-sm-6">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-card-icon" style="background: var(--primary-bg); color: var(--primary);">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <div>
+                    <div class="stat-card-value" style="font-size: 1.375rem;">{{ rows|length }}</div>
+                    <div class="stat-card-label mb-0">Périodes enregistrées</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-card-icon" style="background: var(--success-bg); color: var(--success);">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <div>
+                    <div class="stat-card-value" style="font-size: 1.375rem;">{{ resident }}</div>
+                    <div class="stat-card-label mb-0">Votre compte</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    {% if rows %}
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
             <thead>
                 <tr>
                     <th>Période</th>
                     <th>Statut</th>
                     <th class="text-end">Part loyer</th>
-                    <th class="text-end">Part autres charges</th>
-                    <th class="text-end">Total à payer</th>
+                    <th class="text-end">Autres charges</th>
+                    <th class="text-end">Total</th>
+                    <th class="text-center">Reçu (PDF)</th>
                 </tr>
             </thead>
             <tbody>
             {% for row in rows %}
                 <tr>
-                    <td><a href="{% url 'period_detail' row.period.pk %}">{{ row.period }}</a></td>
+                    <td>
+                        <a href="{% url 'period_detail' row.period.pk %}" style="font-weight: 600;">
+                            <i class="bi bi-calendar3 me-1" style="color: var(--text-muted);"></i>{{ row.period }}
+                        </a>
+                    </td>
                     <td>
                         {% if row.present %}
-                            <span class="badge bg-success">Présent</span>
+                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Présent</span>
                         {% else %}
-                            <span class="badge bg-secondary">Absent</span>
+                            <span class="badge bg-secondary"><i class="bi bi-dash-circle"></i> Absent</span>
                         {% endif %}
                     </td>
                     <td class="text-end">{{ row.rent_share|floatformat:0|intcomma }}</td>
                     <td class="text-end">{{ row.other_share|floatformat:0|intcomma }}</td>
-                    <td class="text-end fw-bold">{{ row.total|floatformat:0|intcomma }}</td>
+                    <td class="text-end fw-bold" style="color: var(--primary);">{{ row.total|floatformat:0|intcomma }} FCFA</td>
+                    <td class="text-center">
+                        <a href="{% url 'contribution_pdf' row.period.pk resident.id %}" class="btn btn-sm btn-outline-danger" target="_blank" title="Télécharger le reçu PDF">
+                            <i class="bi bi-file-earmark-pdf-fill"></i> Télécharger
+                        </a>
+                    </td>
                 </tr>
             {% empty %}
-                <tr><td colspan="5" class="text-muted">Aucune contribution enregistrée pour le moment.</td></tr>
+                <tr><td colspan="6" class="text-muted text-center py-3">Aucune contribution enregistrée.</td></tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon"><i class="bi bi-wallet2"></i></div>
+        <div class="empty-state-title">Aucune contribution</div>
+        <p class="text-muted">Aucune contribution n'a encore été enregistrée.</p>
+    </div>
+    {% endif %}
+</div>
 {% endif %}
 {% endblock %}

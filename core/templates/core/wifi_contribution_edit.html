@@ -1,23 +1,32 @@
 {% extends "core/base.html" %}
 {% block title %}Modifier une contribution wifi{% endblock %}
+{% block breadcrumb %}<a href="{% url 'period_detail' period.pk %}">{{ period }}</a> <span class="separator"><i class="bi bi-chevron-right"></i></span> <span class="current">Contribution wifi</span>{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card p-4">
-            <h4 class="mb-3"><i class="bi bi-pencil"></i> Modifier la contribution de {{ wc.contributor }} — {{ period }}</h4>
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-2">
-                    <label class="form-label">{{ form.contributor.label }}</label>
-                    {{ form.contributor }}
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">{{ form.montant.label }}</label>
-                    {{ form.montant }}
-                </div>
-                <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
-                <a href="{% url 'period_detail' period.pk %}" class="btn btn-link mt-2">Annuler</a>
-            </form>
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-pencil" style="color: var(--primary);"></i>
+                Modifier la contribution de {{ wc.contributor }}
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.contributor.label }}</label>
+                        {{ form.contributor }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.montant.label }}</label>
+                        {{ form.montant }}
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Enregistrer</button>
+                        <a href="{% url 'period_detail' period.pk %}" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

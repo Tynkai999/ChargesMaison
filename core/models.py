@@ -84,6 +84,13 @@ class ChargeType(models.Model):
         verbose_name_plural = "Types de charge"
         ordering = ["nom"]
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.est_loyer and ChargeType.objects.filter(est_loyer=True).exclude(pk=self.pk).exists():
+            raise ValidationError("Un seul type de charge peut être défini comme loyer.")
+        if self.est_wifi and ChargeType.objects.filter(est_wifi=True).exclude(pk=self.pk).exists():
+            raise ValidationError("Un seul type de charge peut être défini comme wifi.")
+
     def __str__(self):
         return self.nom
 

@@ -1,45 +1,247 @@
 {% extends "core/base.html" %}
 {% load humanize %}
 {% block title %}Tableau de bord{% endblock %}
+{% block breadcrumb %}Tableau de bord{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-speedometer2"></i> Tableau de bord</h2>
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-grid-1x2-fill" style="color: var(--primary);"></i> Tableau de bord</h2>
+        <p class="page-header-subtitle">Vue d'ensemble des charges de votre maison</p>
+    </div>
     {% if user.is_staff %}
-    <a href="{% url 'period_add' %}" class="btn btn-primary">
+    <a href="{% url 'period_add' %}" class="btn btn-primary btn-lg">
         <i class="bi bi-plus-circle"></i> Nouvelle période
     </a>
-{% endif %}
+    {% endif %}
 </div>
 
 {% if not summaries %}
-    <div class="alert alert-info">
-        Aucune période enregistrée pour le moment. Commencez par
-        <a href="{% url 'period_add' %}">créer une période</a>.
+    <div class="empty-state">
+        <div class="empty-state-icon"><i class="bi bi-calendar3"></i></div>
+        <div class="empty-state-title">Aucune période enregistrée</div>
+        <p class="text-muted mb-3">Commencez par créer votre première période pour suivre les charges.</p>
+        {% if user.is_staff %}
+        <a href="{% url 'period_add' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Créer une période
+        </a>
+        {% endif %}
     </div>
-{% endif %}
+{% else %}
 
-<div class="row g-4">
+<!-- Résumé global (dernière période) -->
+{% with latest=summaries.0 %}
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+                <div class="stat-card-icon" style="background: var(--primary-bg); color: var(--primary);">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+            </div>
+            <div class="stat-card-value">{{ latest.grand_total|floatformat:0|intcomma }}</div>
+            <div class="stat-card-label">Total maison (FCFA)</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+                <div class="stat-card-icon" style="background: var(--success-bg); color: var(--success);">
+                    <i class="bi bi-house"></i>
+                </div>
+            </div>
+            <div class="stat-card-value">{{ latest.rent_total|floatformat:0|intcomma }}</div>
+            <div class="stat-card-label">Loyer total (FCFA)</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+                <div class="stat-card-icon" style="background: var(--warning-bg); color: var(--warning);">
+                    <i class="bi bi-lightning-charge"></i>
+                </div>
+            </div>
+            <div class="stat-card-value">{{ latest.other_total|floatformat:0|intcomma }}</div>
+            <div class="stat-card-label">Autres charges (FCFA)</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+                <div class="stat-card-icon" style="background: var(--info-bg); color: var(--info);">
+                    <i class="bi bi-people"></i>
+                </div>
+            </div>
+            <div class="stat-card-value">{{ latest.present_count }}<span style="font-size: 0.875rem; font-weight: 400; color: var(--text-muted);">/{{ latest.total_residents }}</span></div>
+            <div class="stat-card-label">Présents ce mois</div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+
+<!-- Périodes récentes -->
+<div class="d-flex align-items-center justify-content-between mb-3 mt-4">
+    <h5 class="mb-0" style="font-weight: 700; color: var(--text-primary);">
+        <i class="bi bi-clock-history" style="color: var(--text-muted);"></i> Périodes récentes
+    </h5>
+    <a href="{% url 'period_list' %}" class="btn btn-sm btn-outline-secondary">
+        Voir tout <i class="bi bi-arrow-right"></i>
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
 {% for summary in summaries %}
     <div class="col-md-6 col-lg-4">
-        <div class="card stat-card h-100">
-            <div class="card-body">
-                <h5 class="card-title d-flex justify-content-between">
-                    {{ summary.period }}
-                    {% if summary.period.cloturee %}<span class="badge bg-secondary">Clôturée</span>{% endif %}
-                </h5>
-                <table class="table table-sm mb-3">
-                    <tr><td>Loyer total</td><td class="text-end">{{ summary.rent_total|floatformat:0|intcomma }} FCFA</td></tr>
-                    <tr><td>Autres charges</td><td class="text-end">{{ summary.other_total|floatformat:0|intcomma }} FCFA</td></tr>
-                    <tr><td>Wifi (net à répartir)</td><td class="text-end">{{ summary.wifi_remainder|floatformat:0|intcomma }} FCFA</td></tr>
-                    <tr class="fw-bold border-top"><td>Total maison</td><td class="text-end">{{ summary.grand_total|floatformat:0|intcomma }} FCFA</td></tr>
-                </table>
-                <p class="text-muted small mb-3">
-                    <i class="bi bi-people"></i> {{ summary.present_count }} présent(s) / {{ summary.total_residents }} résident(s)
-                </p>
-                <a href="{% url 'period_detail' summary.period.pk %}" class="btn btn-outline-primary w-100">Voir le détail <i class="bi bi-arrow-right"></i></a>
+        <a href="{% url 'period_detail' summary.period.pk %}" class="text-decoration-none">
+            <div class="card h-100 accent-primary" style="transition: all 0.2s ease; cursor: pointer;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h6 class="mb-0" style="font-weight: 700; color: var(--text-primary);">
+                            {{ summary.period }}
+                        </h6>
+                        {% if summary.period.cloturee %}
+                            <span class="badge bg-secondary">Clôturée</span>
+                        {% else %}
+                            <span class="badge bg-success">Ouverte</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-end mb-2">
+                        <div>
+                            <div class="stat-card-label mb-1">Total</div>
+                            <div style="font-size: 1.25rem; font-weight: 800; color: var(--primary); letter-spacing: -0.02em;">
+                                {{ summary.grand_total|floatformat:0|intcomma }} <span style="font-size: 0.75rem; font-weight: 500;">FCFA</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="stat-card-label mb-1">Présents</div>
+                            <div style="font-weight: 700; color: var(--text-primary);">
+                                {{ summary.present_count }}/{{ summary.total_residents }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini breakdown -->
+                    <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 1rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+                        <span><i class="bi bi-house" style="color: var(--success);"></i> {{ summary.rent_total|floatformat:0|intcomma }}</span>
+                        <span><i class="bi bi-lightning-charge" style="color: var(--warning);"></i> {{ summary.other_total|floatformat:0|intcomma }}</span>
+                        <span><i class="bi bi-wifi" style="color: var(--info);"></i> {{ summary.wifi_remainder|floatformat:0|intcomma }}</span>
+                    </div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 {% endfor %}
 </div>
+
+<!-- Graphique Evolution -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0" style="font-weight: 700; color: var(--text-primary);">
+            <i class="bi bi-graph-up-arrow" style="color: var(--text-muted);"></i> Évolution des dépenses
+        </h5>
+    </div>
+    <div class="card-body" style="position: relative; height: 350px;">
+        <canvas id="expenseChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        
+        // Prepare data from Django summaries
+        const periods = [];
+        const rentData = [];
+        const otherData = [];
+        const wifiData = [];
+
+        {% for s in summaries reversed %}
+            periods.push("{{ s.period }}");
+            rentData.push({{ s.rent_total|stringformat:"f" }});
+            otherData.push({{ s.other_total|stringformat:"f" }});
+            wifiData.push({{ s.wifi_remainder|stringformat:"f" }});
+        {% endfor %}
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: periods,
+                datasets: [
+                    {
+                        label: 'Loyer',
+                        data: rentData,
+                        backgroundColor: '#10B981', // success color
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Autres Charges',
+                        data: otherData,
+                        backgroundColor: '#F59E0B', // warning color
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Wifi (Solde)',
+                        data: wifiData,
+                        backgroundColor: '#06B6D4', // info color
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { family: 'Inter', size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleFont: { family: 'Inter', size: 13 },
+                        bodyFont: { family: 'Inter', size: 13 },
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('fr-FR').format(context.parsed.y) + ' FCFA';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter' } }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        grid: { borderDash: [4, 4], color: '#E2E8F0' },
+                        ticks: {
+                            font: { family: 'Inter' },
+                            callback: function(value) {
+                                return new Intl.NumberFormat('fr-FR').format(value) + ' FCFA';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endif %}
 {% endblock %}

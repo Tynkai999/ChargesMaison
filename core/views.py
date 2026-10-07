@@ -43,7 +43,7 @@ def _resident_pdf_response(period, line, summary, inline=True):
 
 @login_required
 def dashboard(request):
-    periods = Period.objects.all()[:6]
+    periods = Period.objects.prefetch_related("charges__charge_type", "presences__resident__user", "wifi_contributions__contributor", "payments__resident__user").order_by("-annee", "-mois")[:6]
     summaries = [compute_period_summary(p) for p in periods]
     return render(request, "core/dashboard.html", {"summaries": summaries})
 
@@ -54,7 +54,7 @@ def period_list(request):
     return render(request, "core/period_list.html", {"periods": periods})
 
 
-@staff_member_required
+@is_staff
 def period_add(request):
     if request.method == "POST":
         form = PeriodForm(request.POST)
@@ -67,9 +67,12 @@ def period_add(request):
     return render(request, "core/period_form.html", {"form": form})
 
 
-@staff_member_required
+@is_staff
 def period_edit(request, pk):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     if request.method == "POST":
         form = PeriodForm(request.POST, instance=period)
         if form.is_valid():
@@ -101,9 +104,12 @@ def period_detail(request, pk):
         "presence_rows": presence_rows,
     })
 
-@staff_member_required
+@is_staff
 def period_delete(request, pk):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     if request.method == "POST":
         period.delete()
         messages.success(request, "Période supprimée.")
@@ -111,9 +117,12 @@ def period_delete(request, pk):
     return render(request, "core/period_delete.html", {"period": period})
 
 
-@login_required
+@is_staff
 def charge_add(request, pk):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     if request.method == "POST":
         form = ChargeForm(request.POST)
         if form.is_valid():
@@ -126,9 +135,12 @@ def charge_add(request, pk):
     return redirect("period_detail", pk=period.pk)
 
 # modifier les charges existantes       
-@login_required
+@is_staff
 def charge_edit(request, pk, charge_id):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     charge = get_object_or_404(Charge, pk=charge_id, period=period)
     if request.method == "POST":
         form = ChargeForm(request.POST, instance=charge)
@@ -140,9 +152,12 @@ def charge_edit(request, pk, charge_id):
         form = ChargeForm(instance=charge)
     return render(request, "core/charge_edit.html", {"form": form, "period": period, "charge": charge})
 
-@login_required
+@is_staff
 def charge_delete(request, pk, charge_id):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     charge = get_object_or_404(Charge, pk=charge_id, period=period)
     if request.method == "POST":
         charge.delete()
@@ -150,9 +165,12 @@ def charge_delete(request, pk, charge_id):
     return redirect("period_detail", pk=period.pk)
 
 
-@login_required
+@is_staff
 def presence_update(request, pk):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     if request.method == "POST":
         residents = Resident.objects.filter(actif=True)
         for r in residents:
@@ -162,9 +180,15 @@ def presence_update(request, pk):
     return redirect("period_detail", pk=period.pk)
 
 
-@login_required
+@is_staff
 def wifi_contribution_add(request, pk):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     if request.method == "POST":
         form = WifiContributionForm(request.POST)
         if form.is_valid():
@@ -180,9 +204,12 @@ def wifi_contribution_add(request, pk):
     return redirect("period_detail", pk=period.pk)
 
 
-@login_required
+@is_staff
 def wifi_contribution_edit(request, pk, wc_id):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     wc = get_object_or_404(WifiContribution, pk=wc_id, period=period)
     if request.method == "POST":
         form = WifiContributionForm(request.POST, instance=wc)
@@ -194,9 +221,12 @@ def wifi_contribution_edit(request, pk, wc_id):
         form = WifiContributionForm(instance=wc)
     return render(request, "core/wifi_contribution_edit.html", {"form": form, "period": period, "wc": wc})
 
-@login_required
+@is_staff
 def wifi_contribution_delete(request, pk, wc_id):
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee:
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
     wc = get_object_or_404(WifiContribution, pk=wc_id, period=period)
     if request.method == "POST":
         wc.delete()
@@ -204,7 +234,7 @@ def wifi_contribution_delete(request, pk, wc_id):
     return redirect("period_detail", pk=period.pk)
 
 
-@login_required
+@is_staff
 def contributor_list(request):
     contributors = ExternalContributor.objects.all()
     if request.method == "POST":
@@ -218,7 +248,7 @@ def contributor_list(request):
     return render(request, "core/contributor_list.html", {"contributors": contributors, "form": form})
 
 
-@login_required
+@is_staff
 def contributor_edit(request, pk):
     contributor = get_object_or_404(ExternalContributor, pk=pk)
     if request.method == "POST":
@@ -232,7 +262,7 @@ def contributor_edit(request, pk):
     return render(request, "core/contributor_edit.html", {"form": form, "contributor": contributor})
 
 
-@login_required
+@is_staff
 def contributor_delete(request, pk):
     contributor = get_object_or_404(ExternalContributor, pk=pk)
     if request.method == "POST":
@@ -241,7 +271,7 @@ def contributor_delete(request, pk):
     return redirect("contributor_list")
 
 
-@login_required
+@is_staff
 def charge_type_list(request):
     charge_types = ChargeType.objects.all()
     if request.method == "POST":
@@ -254,7 +284,7 @@ def charge_type_list(request):
         form = ChargeTypeForm()
     return render(request, "core/charge_type_list.html", {"charge_types": charge_types, "form": form})
 
-@login_required
+@is_staff
 def charge_type_edit(request, pk):
     charge_type = get_object_or_404(ChargeType, pk=pk)
     if request.method == "POST":
@@ -268,7 +298,7 @@ def charge_type_edit(request, pk):
     return render(request, "core/charge_type_edit.html", {"form": form, "charge_type": charge_type})
 
 
-@login_required
+@is_staff
 def charge_type_delete(request, pk):
     charge_type = get_object_or_404(ChargeType, pk=pk)
     if request.method == "POST":
@@ -344,7 +374,7 @@ def contribution_pdf(request, pk, resident_id):
     return _resident_pdf_response(period, line, summary, inline=False)
 
 
-@login_required
+@is_staff
 def period_pdf_all(request, pk):
     """Télécharge le récapitulatif PDF de tous les résidents pour une période."""
     period = get_object_or_404(Period, pk=pk)
@@ -398,6 +428,9 @@ def contribution_pdf_send(request, pk, resident_id):
 def payment_tracking(request, pk):
     """Page d'administration : cocher qui a payé, combien, et suivre les paiements."""
     period = get_object_or_404(Period, pk=pk)
+    if period.cloturee and request.method == "POST":
+        messages.error(request, "Cette période est clôturée.")
+        return redirect("period_detail", pk=period.pk)
 
     if request.method == "POST":
         residents = Resident.objects.filter(actif=True)
