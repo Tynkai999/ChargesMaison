@@ -1,0 +1,439 @@
+[
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1500000$R3H6SitRb4HirVXh9RXEv1$UJUn10NBvjCThMMS8l3bwMP6CDv2KQ5KX+XdaCZ4ISE=",
+            "last_login": "2026-08-22T15:02:15.698Z",
+            "is_superuser": true,
+            "username": "demeter",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2026-08-20T20:53:31.846Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1500000$pEfTosZAjgiwkD02sOM4HW$UK7iEH/IOaHsRz7kT9t/hWVDBTDQOq29i8UgSwMV9Zc=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "demeter226",
+            "first_name": "Nathan",
+            "last_name": "BONI",
+            "email": "bonituynathanael@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-20T20:57:30.888Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1500000$2NdCEeQWla6aD4glp6cmyw$zfWMfnXDfyK0iU8SyeX8aHAjMMjCd1NVIRpIUIQgvPs=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Moussa",
+            "first_name": "Moussa",
+            "last_name": "KASSONGO",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-20T20:58:30.926Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1500000$UYy0NEpY1sQ6QAJSxXYi4M$P9H+f5+MPlowThqbv1iZRniIHBeToeFWRH2CTdnS07k=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "mika",
+            "first_name": "Micka\u00ebl",
+            "last_name": "GAMBO",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-20T20:59:01.339Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1500000$cVWM5e3iOGFTDndIOdrqzP$JHAyvD/zYTPKPCez+qeKsmXr3TNTiM1/GtqLUcRZvow=",
+            "last_login": "2026-08-22T15:01:35.913Z",
+            "is_superuser": false,
+            "username": "creatone",
+            "first_name": "Nathan",
+            "last_name": "GAMBO",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-20T20:59:27.050Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1500000$08hL1fGx2rUqC1aja0mdGw$oUyE7QxEsKHINU3Z97t9eoZZxwVIdBc0I533fAw0/sI=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "sami",
+            "first_name": "Samuel",
+            "last_name": "BOUSSIM",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-20T20:59:54.935Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "5gp5it9ed5z7b406so4x42re2d3indpg",
+        "fields": {
+            "session_data": ".eJxVjDsOwyAQBe9CHSHWID4p0-cMaGGX4CTCkrErK3ePLblI2jfzZhMR16XGtfMcRxJXAeLyuyXML24HoCe2xyTz1JZ5TPJQ5Em7vE_E79vp_gUq9rq_HRYPKgXtwIFXTpmSlLfMdih7JbDVbDQiAxkdMiYXrENdSGkwAxXx-QLZrTf9:1wxnEd:EyTUd2TQQZCJOA894-8k3F6xHjzIp4KsyzfjDN4GrAg",
+            "expire_date": "2026-09-05T15:02:15.701Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "nbrtxeq4ln9q5etgrcvr90zo5p2retmk",
+        "fields": {
+            "session_data": ".eJxVjM0OwiAQhN-FsyFFWH48evcZyC4sUjU0Ke3J-O62SQ96nPm-mbeIuC41rp3nOGZxESBOvx1henLbQX5gu08yTW2ZR5K7Ig_a5W3K_Loe7t9BxV63tQvea-MRi7UBnLEqgSekbAYsxRYCNQBxMRwyeNRnrR2rLSoHmq0Rny_eZTe-:1wxmSB:6ZxWnfPW7PtIhuikt1ajMy6eWWDjwkTHeUmQUo5WeUw",
+            "expire_date": "2026-09-05T14:12:11.276Z"
+        }
+    },
+    {
+        "model": "core.resident",
+        "pk": "bf632d6b-a4be-467d-ac31-8c72cf912aee",
+        "fields": {
+            "user": [
+                "demeter226"
+            ],
+            "telephone": "",
+            "actif": true,
+            "date_ajout": "2026-08-20T20:57:31.106Z"
+        }
+    },
+    {
+        "model": "core.resident",
+        "pk": "bd649cd8-bf7a-4149-94b0-b1a26edce117",
+        "fields": {
+            "user": [
+                "Moussa"
+            ],
+            "telephone": "",
+            "actif": true,
+            "date_ajout": "2026-08-20T20:58:31.141Z"
+        }
+    },
+    {
+        "model": "core.resident",
+        "pk": "d03e0d6b-0f9b-4d4e-a565-38eec68feca2",
+        "fields": {
+            "user": [
+                "mika"
+            ],
+            "telephone": "",
+            "actif": true,
+            "date_ajout": "2026-08-20T20:59:01.562Z"
+        }
+    },
+    {
+        "model": "core.resident",
+        "pk": "1fd7379d-ac1a-479a-9364-288ae1490601",
+        "fields": {
+            "user": [
+                "creatone"
+            ],
+            "telephone": "",
+            "actif": true,
+            "date_ajout": "2026-08-20T20:59:27.324Z"
+        }
+    },
+    {
+        "model": "core.resident",
+        "pk": "b76031b8-7e4d-4e20-9b0d-67314c08fe06",
+        "fields": {
+            "user": [
+                "sami"
+            ],
+            "telephone": "",
+            "actif": true,
+            "date_ajout": "2026-08-20T20:59:55.134Z"
+        }
+    },
+    {
+        "model": "core.externalcontributor",
+        "pk": "be7ba9c0-a214-4fb7-9558-4a05536f8753",
+        "fields": {
+            "nom": "voisin 1",
+            "telephone": ""
+        }
+    },
+    {
+        "model": "core.externalcontributor",
+        "pk": "509d3cad-ea02-4cf2-8fd6-074fbef3085a",
+        "fields": {
+            "nom": "voisin 2",
+            "telephone": ""
+        }
+    },
+    {
+        "model": "core.externalcontributor",
+        "pk": "45430bc5-d6fe-420e-b027-c3dd0df482ac",
+        "fields": {
+            "nom": "voisin 3",
+            "telephone": ""
+        }
+    },
+    {
+        "model": "core.period",
+        "pk": "91125219-81ad-457e-b145-8b4196da961d",
+        "fields": {
+            "annee": 2026,
+            "mois": 8,
+            "cloturee": false
+        }
+    },
+    {
+        "model": "core.chargetype",
+        "pk": "16d7548e-3132-481d-b82c-5b0deb60953e",
+        "fields": {
+            "nom": "Loyer",
+            "est_loyer": true,
+            "est_wifi": false
+        }
+    },
+    {
+        "model": "core.chargetype",
+        "pk": "e4b518a5-7d08-4aa8-936d-5c5d18661f4c",
+        "fields": {
+            "nom": "\u00c9lectricit\u00e9",
+            "est_loyer": false,
+            "est_wifi": false
+        }
+    },
+    {
+        "model": "core.chargetype",
+        "pk": "df07049f-d903-4737-b2ea-06ef02d6066c",
+        "fields": {
+            "nom": "Eau",
+            "est_loyer": false,
+            "est_wifi": false
+        }
+    },
+    {
+        "model": "core.chargetype",
+        "pk": "39ca1880-7c1c-410f-a2f7-3bbc9d8e3e92",
+        "fields": {
+            "nom": "Internet / Wifi",
+            "est_loyer": false,
+            "est_wifi": true
+        }
+    },
+    {
+        "model": "core.chargetype",
+        "pk": "b6ac7f0b-3ef0-401b-bc49-b5222df3c3d8",
+        "fields": {
+            "nom": "M\u00e9nage / Entretien",
+            "est_loyer": false,
+            "est_wifi": false
+        }
+    },
+    {
+        "model": "core.chargetype",
+        "pk": "8440ef0b-e20c-470e-a34c-feb453017f86",
+        "fields": {
+            "nom": "Riz",
+            "est_loyer": true,
+            "est_wifi": false
+        }
+    },
+    {
+        "model": "core.charge",
+        "pk": "439bc708-1404-4322-8c39-88c3a836e1c7",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "charge_type": "df07049f-d903-4737-b2ea-06ef02d6066c",
+            "montant": "1000.00",
+            "note": ""
+        }
+    },
+    {
+        "model": "core.charge",
+        "pk": "31a78ce5-994f-4062-9962-2e5fb33648c4",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "charge_type": "e4b518a5-7d08-4aa8-936d-5c5d18661f4c",
+            "montant": "3000.00",
+            "note": ""
+        }
+    },
+    {
+        "model": "core.charge",
+        "pk": "49ac6c5e-7288-4217-94b5-a86a299afb05",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "charge_type": "39ca1880-7c1c-410f-a2f7-3bbc9d8e3e92",
+            "montant": "15000.00",
+            "note": ""
+        }
+    },
+    {
+        "model": "core.charge",
+        "pk": "c81a4be0-4be0-4c4d-b187-7d2d74ae44b6",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "charge_type": "16d7548e-3132-481d-b82c-5b0deb60953e",
+            "montant": "25000.00",
+            "note": ""
+        }
+    },
+    {
+        "model": "core.presence",
+        "pk": "ba8f6212-527c-41bd-8683-6fa616cb9767",
+        "fields": {
+            "resident": "d03e0d6b-0f9b-4d4e-a565-38eec68feca2",
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "present": true
+        }
+    },
+    {
+        "model": "core.presence",
+        "pk": "1e6e13d4-4908-45be-b534-ceed19bf94fc",
+        "fields": {
+            "resident": "bd649cd8-bf7a-4149-94b0-b1a26edce117",
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "present": true
+        }
+    },
+    {
+        "model": "core.presence",
+        "pk": "2af60079-5c03-4a95-9cda-215c1b31e130",
+        "fields": {
+            "resident": "bf632d6b-a4be-467d-ac31-8c72cf912aee",
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "present": true
+        }
+    },
+    {
+        "model": "core.presence",
+        "pk": "d6cb7e79-2e3f-4286-ad63-7f67ae9d3879",
+        "fields": {
+            "resident": "1fd7379d-ac1a-479a-9364-288ae1490601",
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "present": true
+        }
+    },
+    {
+        "model": "core.presence",
+        "pk": "639d97e6-9c7a-4e09-80df-d10c0b425784",
+        "fields": {
+            "resident": "b76031b8-7e4d-4e20-9b0d-67314c08fe06",
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "present": true
+        }
+    },
+    {
+        "model": "core.wificontribution",
+        "pk": "952ee647-2bf6-45f6-a9be-27fa46b9b2c9",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "contributor": "be7ba9c0-a214-4fb7-9558-4a05536f8753",
+            "montant": "1500.00"
+        }
+    },
+    {
+        "model": "core.wificontribution",
+        "pk": "207d4ec1-ba5d-4c0f-85c2-1387fb5fdbaf",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "contributor": "509d3cad-ea02-4cf2-8fd6-074fbef3085a",
+            "montant": "2000.00"
+        }
+    },
+    {
+        "model": "core.wificontribution",
+        "pk": "8b173763-74d5-40a9-88aa-76f511e5cc5d",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "contributor": "45430bc5-d6fe-420e-b027-c3dd0df482ac",
+            "montant": "2000.00"
+        }
+    },
+    {
+        "model": "core.payment",
+        "pk": "51040f31-da43-4e45-9e53-c8b10d81566c",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "resident": "d03e0d6b-0f9b-4d4e-a565-38eec68feca2",
+            "paye": false,
+            "montant_paye": "5000.00",
+            "date_paiement": "2026-08-22",
+            "note": ""
+        }
+    },
+    {
+        "model": "core.payment",
+        "pk": "53ccf033-0415-4cba-916a-b5a34b50102d",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "resident": "bd649cd8-bf7a-4149-94b0-b1a26edce117",
+            "paye": false,
+            "montant_paye": "0.00",
+            "date_paiement": null,
+            "note": ""
+        }
+    },
+    {
+        "model": "core.payment",
+        "pk": "e6b09cfa-980e-4848-bbbc-56d8ac789795",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "resident": "bf632d6b-a4be-467d-ac31-8c72cf912aee",
+            "paye": false,
+            "montant_paye": "0.00",
+            "date_paiement": null,
+            "note": ""
+        }
+    },
+    {
+        "model": "core.payment",
+        "pk": "88b6e04f-fd12-41c8-b92f-500f078f4971",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "resident": "1fd7379d-ac1a-479a-9364-288ae1490601",
+            "paye": false,
+            "montant_paye": "0.00",
+            "date_paiement": null,
+            "note": ""
+        }
+    },
+    {
+        "model": "core.payment",
+        "pk": "277c0e4a-b9ba-4534-90a6-e5f503ce427b",
+        "fields": {
+            "period": "91125219-81ad-457e-b145-8b4196da961d",
+            "resident": "b76031b8-7e4d-4e20-9b0d-67314c08fe06",
+            "paye": false,
+            "montant_paye": "0.00",
+            "date_paiement": null,
+            "note": ""
+        }
+    }
+]

@@ -25,6 +25,27 @@ from .services import compute_period_summary
 is_staff = user_passes_test(lambda u: u.is_staff)
 
 
+def _filter_summary_for_user(summary, user):
+    if user.is_staff:
+        return summary
+    own_resident = getattr(user, "resident", None)
+    if not own_resident:
+        return summary
+    my_line = next((line for line in summary["lines"] if line["resident"].id == own_resident.id), None)
+    if my_line and not my_line["present"]:
+        summary["lines"] = [my_line]
+    return summary
+
+def _auto_close_past_periods():
+    """Clôture automatiquement les périodes dont le mois/année est strictement inférieur à aujourd'hui."""
+    today = date.today()
+    open_periods = Period.objects.filter(cloturee=False)
+    for p in open_periods:
+        if p.annee < today.year or (p.annee == today.year and p.mois < today.month):
+            p.cloturee = True
+            p.save(update_fields=['cloturee'])
+
+
 def _line_for_resident(summary, resident_id):
     for line in summary["lines"]:
         if line["resident"].id == resident_id:
@@ -43,13 +64,15 @@ def _resident_pdf_response(period, line, summary, inline=True):
 
 @login_required
 def dashboard(request):
+    _auto_close_past_periods()
     periods = Period.objects.prefetch_related("charges__charge_type", "presences__resident__user", "wifi_contributions__contributor", "payments__resident__user").order_by("-annee", "-mois")[:6]
-    summaries = [compute_period_summary(p) for p in periods]
+    summaries = [_filter_summary_for_user(compute_period_summary(p), request.user) for p in periods]
     return render(request, "core/dashboard.html", {"summaries": summaries})
 
 
 @login_required
 def period_list(request):
+    _auto_close_past_periods()
     periods = Period.objects.all()
     return render(request, "core/period_list.html", {"periods": periods})
 
@@ -87,15 +110,25 @@ def period_edit(request, pk):
 
 @login_required
 def period_detail(request, pk):
+    _auto_close_past_periods()
     period = get_object_or_404(Period, pk=pk)
-    summary = compute_period_summary(period)
+    summary = _filter_summary_for_user(compute_period_summary(period), request.user)
     charge_form = ChargeForm()
     wifi_form = WifiContributionForm()
     residents = Resident.objects.filter(actif=True).select_related("user")
     presence_map = {p.resident_id: p.present for p in period.presences.all()}
+    
     presence_rows = [
         {"resident": r, "present": presence_map.get(r.id, True)} for r in residents
     ]
+    
+    if not request.user.is_staff:
+        own_resident = getattr(request.user, "resident", None)
+        if own_resident:
+            my_presence = next((r for r in presence_rows if r["resident"].id == own_resident.id), None)
+            if my_presence and not my_presence["present"]:
+                presence_rows = [my_presence]
+
     return render(request, "core/period_detail.html", {
         "period": period,
         "summary": summary,
@@ -366,7 +399,7 @@ def contribution_pdf(request, pk, resident_id):
     if not request.user.is_staff and (own_resident is None or own_resident.id != resident.id):
         raise Http404("Vous ne pouvez pas accéder au reçu d'un autre résident.")
 
-    summary = compute_period_summary(period)
+    summary = _filter_summary_for_user(compute_period_summary(period), request.user)
     line = _line_for_resident(summary, resident.id)
     if line is None:
         raise Http404("Résident introuvable pour cette période.")
@@ -378,7 +411,7 @@ def contribution_pdf(request, pk, resident_id):
 def period_pdf_all(request, pk):
     """Télécharge le récapitulatif PDF de tous les résidents pour une période."""
     period = get_object_or_404(Period, pk=pk)
-    summary = compute_period_summary(period)
+    summary = _filter_summary_for_user(compute_period_summary(period), request.user)
     buffer = build_period_pdf(summary)
     filename = f"recapitulatif_{period.annee}_{period.mois:02d}.pdf"
     response = HttpResponse(buffer.read(), content_type="application/pdf")
@@ -391,7 +424,7 @@ def contribution_pdf_send(request, pk, resident_id):
     """Envoie le reçu PDF d'un résident par email (bouton 'Envoyer' réservé à l'administration)."""
     period = get_object_or_404(Period, pk=pk)
     resident = get_object_or_404(Resident, pk=resident_id)
-    summary = compute_period_summary(period)
+    summary = _filter_summary_for_user(compute_period_summary(period), request.user)
     line = _line_for_resident(summary, resident.id)
     if line is None:
         raise Http404("Résident introuvable pour cette période.")
@@ -456,7 +489,7 @@ def payment_tracking(request, pk):
         messages.success(request, "Suivi des paiements mis à jour.")
         return redirect("payment_tracking", pk=period.pk)
 
-    summary = compute_period_summary(period)
+    summary = _filter_summary_for_user(compute_period_summary(period), request.user)
     return render(request, "core/payment_tracking.html", {"period": period, "summary": summary})
 
 
@@ -467,7 +500,7 @@ def my_contributions(request):
     if resident:
         periods = Period.objects.all()
         for period in periods:
-            summary = compute_period_summary(period)
+            summary = _filter_summary_for_user(compute_period_summary(period), request.user)
             for line in summary["lines"]:
                 if line["resident"].id == resident.id:
                     rows.append({"period": period, **line})

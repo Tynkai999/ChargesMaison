@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 
 from django.contrib.auth.models import User
@@ -19,6 +20,7 @@ class Resident(models.Model):
     divisé par le nombre total de résidents), et paie en plus sa part des
     autres charges uniquement s'il est présent sur la période.
     """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="resident")
     telephone = models.CharField("Téléphone", max_length=30, blank=True)
     actif = models.BooleanField("Actif", default=True, help_text="Décochez pour retirer un résident sans supprimer son historique.")
@@ -37,6 +39,7 @@ class Resident(models.Model):
 class ExternalContributor(models.Model):
     """Une personne qui ne vit PAS dans la maison mais qui contribue
     uniquement à l'abonnement internet (wifi)."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nom = models.CharField("Nom", max_length=150)
     telephone = models.CharField("Téléphone", max_length=10, blank=True)
 
@@ -51,6 +54,7 @@ class ExternalContributor(models.Model):
 
 class Period(models.Model):
     """Une période (mois/année) sur laquelle on calcule les charges."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     annee = models.PositiveIntegerField("Année")
     mois = models.PositiveSmallIntegerField("Mois", choices=MOIS_CHOICES)
     cloturee = models.BooleanField("Clôturée", default=False, help_text="Une période clôturée n'est plus modifiable dans l'interface.")
@@ -67,6 +71,7 @@ class Period(models.Model):
 
 class ChargeType(models.Model):
     """Type de charge : Loyer, Électricité, Eau, Wifi, Ménage, etc."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nom = models.CharField("Nom", max_length=100, unique=True)
     est_loyer = models.BooleanField(
         "C'est le loyer",
@@ -98,6 +103,7 @@ class ChargeType(models.Model):
 class Charge(models.Model):
     """Une dépense pour une période donnée (montant du loyer du mois,
     facture d'électricité du mois, abonnement wifi du mois, etc.)."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     period = models.ForeignKey(Period, on_delete=models.CASCADE, related_name="charges")
     charge_type = models.ForeignKey(ChargeType, on_delete=models.PROTECT, related_name="charges")
     montant = models.DecimalField("Montant (FCFA)", max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
@@ -115,6 +121,7 @@ class Charge(models.Model):
 class Presence(models.Model):
     """Statut de présence d'un résident sur une période donnée.
     Par défaut (aucun enregistrement), le résident est considéré présent."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE, related_name="presences")
     period = models.ForeignKey(Period, on_delete=models.CASCADE, related_name="presences")
     present = models.BooleanField("Présent dans la maison", default=True)
@@ -131,6 +138,7 @@ class Presence(models.Model):
 
 class WifiContribution(models.Model):
     """Contribution d'une personne externe à l'abonnement wifi, pour une période."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     period = models.ForeignKey(Period, on_delete=models.CASCADE, related_name="wifi_contributions")
     contributor = models.ForeignKey(ExternalContributor, on_delete=models.CASCADE, related_name="contributions")
     montant = models.DecimalField("Montant (FCFA)", max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
@@ -147,6 +155,7 @@ class WifiContribution(models.Model):
 class Payment(models.Model):
     """Suivi du paiement d'un résident pour une période donnée.
     Rempli par l'administration (case à cocher + montant réellement versé)."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     period = models.ForeignKey(Period, on_delete=models.CASCADE, related_name="payments")
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE, related_name="payments")
     paye = models.BooleanField("Payé", default=False)
